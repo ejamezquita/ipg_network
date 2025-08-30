@@ -1,0 +1,72 @@
+index	abbreviation	column_name	example	notes
+0	PT	publication_type	J	J (Article), C (Proceedings), S (Book chapter)
+1	AU	manuscript_authors	Bahk, S; Ahsan, N; An, J; Kim, SH; Ramadany, Z; Hong, JC; Thelen, JJ; Chung, WS	
+2	BA	book_author	nan	
+3	BE	book_editor	nan	
+4	GP	book_group_author	nan	
+5	AF	manuscript_authors_full_names	Bahk, Sunghwa; Ahsan, Nagib; An, Jonguk; Kim, Sun Ho; Ramadany, Zakiyah; Hong, Jong Chan; Thelen, Jay J.; Chung, Woo Sik	
+6	BF	book_author_full_names	nan	
+7	CA	consortium_author	nan	
+8	TI	title	Identification of mitogen-activated protein kinases substrates in <i>Arabidopsis</i> using kinase client assay	
+9	SO	source_name	PLANT SIGNALING & BEHAVIOR	
+10	SE	book_series	nan	
+11	BS	book_source	nan	
+12	LA	language	English	
+13	DT	document_type	Article	
+14	CT	conference_title	nan	
+15	CY	conference_year	nan	
+16	CL	conference_location	nan	
+17	SP	conference_sponsor	nan	
+18	HO	conference_host	nan	
+19	DE	author_keywords	MPKs; Phosphorylation; Substrates; signaling	
+20	ID	keywords_plus	MASS-SPECTROMETRY; PRIMARY SEQUENCE; PHOSPHORYLATION; THALIANA; NETWORKS; MAPKS; MPK6	
+21	AB	abstract	Mitogen-activated protein kinase (MPK) cascades are essential signal transduction components that control a variety of cellular responses in all eukaryotes. MPKs convert extracellular stimuli into cellular responses by the phosphorylation of downstream substrates. Although MPK cascades are predicted to be very complex, only limited numbers of MPK substrates have been identified in plants. Here, we used the kinase client (KiC) assay to identify novel substrates of MPK3 and MPK6. Recombinant MPK3 or MPK6 were tested against a large synthetic peptide library representing in vivo phosphorylation sites, and phosphorylated peptides were identified by high-resolution tandem mass spectrometry. From this screen, we identified 23 and 21 putative client peptides of MPK3 and MPK6, respectively. To verify the phosphorylation of putative client peptides, we performed in vitro kinase assay with recombinant fusion proteins of isolated client peptides. We found that 13 and 9 recombinant proteins were phosphorylated by MPK3 and MPK6. Among them, 11 proteins were proven to be the novel substrates of two MPKs. This study suggests that the KiC assay is a useful method to identify new substrates of MPKs.	
+22	C1	author_full_affiliations	[Bahk, Sunghwa; An, Jonguk; Kim, Sun Ho; Ramadany, Zakiyah; Hong, Jong Chan; Chung, Woo Sik] Gyeongsang Natl Univ, Plant Mol Biol & Biotechnol Res Ctr, BK21 Four Program, Div Appl Life Sci, Jinju, South Korea; [Ahsan, Nagib; Thelen, Jay J.] Univ Missouri, Christopher Bond Life Sci Ctr, Dept Biochem, Columbia, MO USA; [Ahsan, Nagib; Thelen, Jay J.] Univ Missouri, Christopher Bond Life Sci Ctr, Interdisciplinary Plant Grp, Columbia, MO USA; [Ahsan, Nagib] Univ Oklahoma, Dept Chem & Biochem, Norman, OK USA; [Ahsan, Nagib] Univ Oklahoma, Stephenson Life Sci Res Ctr, Mass Spectrometry Prote & Metabol Core Facil, Norman, OK USA; [Chung, Woo Sik] Gyeongsang Natl Univ, BK21 Four Program, Div Appl Life Sci, Jinju Daero 501, Jinju 52828, South Korea	
+23	C3	affiliations	Gyeongsang National University; University of Missouri System; University of Missouri Columbia; University of Missouri System; University of Missouri Columbia; University of Oklahoma System; University of Oklahoma - Norman; University of Oklahoma System; University of Oklahoma - Norman; Gyeongsang National University	
+24	RP	corresponding_author_affiliation	Chung, WS (corresponding author), Gyeongsang Natl Univ, BK21 Four Program, Div Appl Life Sci, Jinju Daero 501, Jinju 52828, South Korea.	
+25	EM	corresponding_author_email	chungws@gnu.ac.kr	
+26	RI	researchers_identifiers	nan	
+27	OI	orcid_identifiers	Chung, Woo Sik/0000-0002-2297-3220	
+28	FU	funding_awards	Basic Science Research Program through the National Research Foundation of Korea (NRF) - Ministry of Education [2020R1A6A1A03044344, 2023R1A2C1005572, RS-2023-00235511]	
+29	FP	funding_agency	Basic Science Research Program through the National Research Foundation of Korea (NRF) - Ministry of Education(National Research Foundation of KoreaMinistry of Education (MOE), Republic of KoreaNational Research Council for Economics, Humanities & Social Sciences, Republic of Korea)	
+30	FX	funding_information	This research was supported by Basic Science Research Program through the National Research Foundation of Korea (NRF) funded by the Ministry of Education [2020R1A6A1A03044344, 2023R1A2C1005572 and RS- 2023-00235511].	
+31	CR	CR	nan	
+32	NR	cited_references	37	
+33	TC	times_cited	1	
+34	Z9	times_cited_in_all_databases	1	
+35	U1	use_in_wos_last_180_days	6	
+36	U2	use_in_wos_last_12_years	6	
+37	PU	publisher	TAYLOR & FRANCIS INC	
+38	PI	publisher_location	PHILADELPHIA	
+39	PA	publisher_address	530 WALNUT STREET, STE 850, PHILADELPHIA, PA 19106 USA	
+40	SN	issn	1559-2316	
+41	EI	eissn	1559-2324	
+42	BN	book_issn	nan	
+43	J9	source_name_shortened	PLANT SIGNAL BEHAV	
+44	JI	source_name_shortened_2	Plant Signal. Behav.	
+45	PD	published_date	DEC 31	
+46	PY	year	2024	
+47	VL	volume	19	
+48	IS	issue	1	
+49	PN	part_number	nan	
+50	SU	supplement_number	nan	
+51	SI	special_issue	nan	
+52	MA	meeting_abstract	nan	
+53	BP	begin_page	nan	
+54	EP	end_page	nan	
+55	AR	article_number	2326238	
+56	DI	doi	10.1080/15592324.2024.2326238	
+57	DL	url	http://dx.doi.org/10.1080/15592324.2024.2326238	
+58	D2	book_doi	nan	
+59	EA	early_access	nan	
+60	PG	number_of_pages	9	
+61	WC	wos_categories	Biochemistry & Molecular Biology; Plant Sciences	
+62	WE	wos_core_collection	Science Citation Index Expanded (SCI-EXPANDED)	
+63	SC	science_categories	Biochemistry & Molecular Biology; Plant Sciences	
+64	GA	ids_number	LI5C6	
+65	PM	pubmed_id	38493505	
+66	OA	open_access	gold, Green Published	
+67	HC	highly_cited	nan	Yes/No
+68	HP	hot_paper	nan	Yes/No
+69	DA	date_added	2024-08-21	
+70	UT	accession_number	WOS:001186164400001	
