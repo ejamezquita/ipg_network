@@ -34,8 +34,7 @@ def prepare_dimensions_data(filenames, columns_to_keep, year = datetime.date.tod
     for i in range(len(df)):
         for column in ['Authors', 'Authors (Raw Affiliation)', 'Corresponding Authors']:
             if not pd.isna(df.loc[i,column]):
-                text = df.loc[i,column]
-                text = unicodedata.normalize('NFD', text)
+                text = unicodedata.normalize('NFD', df.loc[i,column])
                 text = text.encode('ascii', 'ignore').decode("utf-8")
                 df.loc[i,column] = text.replace('-','').replace('.','')
     
