@@ -38,7 +38,10 @@ def prepare_dimensions_data(filenames, columns_to_keep, year = datetime.date.tod
                 text = text.encode('ascii', 'ignore').decode("utf-8")
                 df.loc[i,column] = text.replace('-','').replace('.','')
     
-    df = df.loc[:, columns_to_keep]
+    # Only keep a few columns
+    # Drop any papers that might be duplicated
+    df = df.loc[:, columns_to_keep].drop_duplicates(subset=[columns_to_keep[0]])
+    
     return df
 
 
@@ -47,9 +50,9 @@ def prepare_dimensions_data(filenames, columns_to_keep, year = datetime.date.tod
 # Get the papers published in plant journals
 def mask_plant_journals(df, plantssns):
     isplantjournal = np.zeros(len(df), dtype=bool)
-    for i in range(len(df)):
-        if not pd.isna(df.loc[i, 'ISSN']):
-            issn = df.loc[i, 'ISSN'].split(', ')
+    for i,idx in enumerate(df.index):
+        if not pd.isna(df.loc[idx, 'ISSN']):
+            issn = df.loc[idx, 'ISSN'].split(', ')
             isplantjournal[i] = any([ issn[j] in plantssns for j in range(len(issn)) ])
     
     return isplantjournal
@@ -59,9 +62,9 @@ def mask_plant_journals(df, plantssns):
 # Get the papers that were categorized as Plant Biology or Horticulture
 def mask_plant_anzsrc(df, ANZSRC = ['3108 Plant Biology','3008 Horticultural']):
     isplantanz = np.zeros(len(df), dtype=bool)
-    for i in range(len(df)):
-        if not pd.isna(df.loc[i, 'Fields of Research (ANZSRC 2020)']):
-            anzcodes = df.loc[i,'Fields of Research (ANZSRC 2020)']
+    for i,idx in enumerate(df.index):
+        if not pd.isna(df.loc[idx, 'Fields of Research (ANZSRC 2020)']):
+            anzcodes = df.loc[idx,'Fields of Research (ANZSRC 2020)']
             isplantanz[i] = any([ anz in anzcodes for anz in ANZSRC ])
     
     return isplantanz
@@ -71,10 +74,10 @@ def mask_plant_anzsrc(df, ANZSRC = ['3108 Plant Biology','3008 Horticultural']):
 # Count how many plant-related keywords are in the paper
 def count_plant_mesh(df, meshterms):
     isplantmesh = np.zeros(len(df), dtype=int)
-    for i in range(len(df)):
+    for i,idx in enumerate(df.index):
         mscores = np.zeros(len(meshterms), dtype=int)
-        if not pd.isna(df.loc[i, 'MeSH terms']):
-            terms = df.loc[i, 'MeSH terms']
+        if not pd.isna(df.loc[idx, 'MeSH terms']):
+            terms = df.loc[idx, 'MeSH terms']
             for j in range(len(mscores)):
                 mscores[j] = terms.count(meshterms[j])
             isplantmesh[i] = np.sum(mscores)
@@ -83,17 +86,35 @@ def count_plant_mesh(df, meshterms):
 
 
 # Get only the corresponding authors that are affiliated to the institution(s) we are focused on
+# (Optional) but discard those with a dual affiliation to another institution(s)
 # And the number of papers associated to each
-def corresponding_authors_from_institute(df, instlist):
+# Also get the index number these papers correspond to
+def corresponding_authors_from_institute(df, institutes, exclude_list=None):
+    
+    instlist = [inst.replace('.','').replace('-','') for inst in institutes]
+    if exclude_list is not None:
+        exclude_list = [inst.replace('.','').replace('-','') for inst in exclude_list]
     corrs = []
-    for i in range(len(df)):
-        names = (df.iloc[i]['Corresponding Authors']).split('); ')
-        for name in names:
-            if any( [institute in name for institute in instlist] ):
-                corrs.append(name.split(' (')[0])
+    idx = []
+    
+    if exclude_list is None:
+        for i in range(len(df)):
+            names = (df.iloc[i]['Corresponding Authors']).split('); ')
+            for name in names:
+                if any( [institute in name for institute in instlist] ):
+                    corrs.append(name.split(' (')[0])
+                    idx.append(df.iloc[i].name)
+    else:
+        for i in range(len(df)):
+            names = (df.iloc[i]['Corresponding Authors']).split('); ')
+            for name in names:
+                if any( [institute in name for institute in instlist] ) and not any([institute in name for institute in exclude_list]):
+                    corrs.append(name.split(' (')[0])
+                    idx.append(df.iloc[i].name)
+
 
     uq, cts = np.unique(corrs, return_counts=True)
-    return uq, cts
+    return uq, cts, idx
 
 
 
