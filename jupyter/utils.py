@@ -8,7 +8,7 @@ import numpy as np
 
 from rapidfuzz import fuzz
 
-def prepare_dimensions_data(filenames, columns_to_keep, year = datetime.date.today().year):
+def prepare_dimensions_data(filenames, columns_to_keep, places=None, year = datetime.date.today().year):
     
     # Load all the Excels as downloaded from Dimensions
     df = [ None for _ in range(len(filenames)) ]
@@ -38,6 +38,14 @@ def prepare_dimensions_data(filenames, columns_to_keep, year = datetime.date.tod
                 text = text.encode('ascii', 'ignore').decode("utf-8")
                 df.loc[i,column] = text.replace('-','').replace('.','')
     
+    # Drop papers where no author is geographically associated to any of the indicated places
+    # (Only if places are specified)
+    if places is not None:
+        isplace = np.zeros(len(df), dtype=bool)
+        for i in range(len(df)):
+            isplace[i] = any([place in df.loc[i, 'Authors (Raw Affiliation)'].lower() for place in places])
+        df = df.iloc[isplace]
+        
     # Only keep a few columns
     # Drop any papers that might be duplicated
     df = df.loc[:, columns_to_keep].drop_duplicates(subset=[columns_to_keep[0]])
@@ -114,13 +122,16 @@ def corresponding_authors_from_institute(df, institutes, exclude_list=None):
 
 
     uq, cts = np.unique(corrs, return_counts=True)
-    return uq, cts, idx
+    cts = pd.Series(cts, index=uq)
+    
+    return cts, idx
 
 
 
 # Remove corresponding authors with long names because they are not really people but parsing mistakes
-def remove_long_corresponding(uq, cts, alpha=0.15, iqr_range=1.5):
+def remove_long_corresponding(cts, alpha=0.15, iqr_range=1.5):
     
+    uq = cts.index
     uqlens = np.array(list(map(len,uq)))
     q1,q3 = np.quantile(uqlens, [alpha, 1-alpha])
     uqmask = uqlens < q3 + iqr_range*(q3 - q1)
@@ -129,7 +140,7 @@ def remove_long_corresponding(uq, cts, alpha=0.15, iqr_range=1.5):
     cts = cts[uqmask]
     cts = pd.Series(cts, index=uq)
     
-    return uq, cts
+    return cts
 
 
 def add_blanks(s):
@@ -197,18 +208,22 @@ def fuzzy_matching(name1, name2, accept_value = 98):
 # Compute a square matrix of distances: how similar is one name to another?
 # This matrix will later help us match different names that refer to the same author
 # Last name and first name are treated separately: then we take the minimum between the two
-def fuzzy_matrix(uq):
-
-    uqlens = np.argsort(np.array(list(map(len,uq))))[::-1]
+def fuzzy_matrix(pnum):
     
-    firstfz = pd.DataFrame(-1, index=uq[uqlens], columns=uq[uqlens], dtype=float)
-    lastfz = pd.DataFrame(-1, index=uq[uqlens], columns=uq[uqlens], dtype=float)
+    foo = pnum.to_frame('Pubs')
+    foo['N'] = range(len(foo))
+    foo['len'] = list(map(len, pnum.index))
+    foo['name'] = foo.index.str.casefold()
+    foo = foo.sort_values(by=['len','Pubs','name'], ascending=[False, False, True])
+    
+    firstfz = pd.DataFrame(-1, index=foo.index, columns=foo.index, dtype=float)
+    lastfz = pd.DataFrame(-1, index=foo.index, columns=foo.index, dtype=float)
     
     
-    for i in range(len(uq)-1):
-        name1 = uq[uqlens[i]]
-        for j in range(i+1, len(uq)):
-            name2 = uq[uqlens[j]]
+    for i in range(len(firstfz)-1):
+        name1 = firstfz.index[i]
+        for j in range(i+1, len(firstfz)):
+            name2 = firstfz.index[j]
             
             firstfz.iloc[i,j], lastfz.iloc[i,j] = fuzzy_matching(name1, name2)
             firstfz.iloc[j,i], lastfz.iloc[j,i] = firstfz.iloc[i,j], lastfz.iloc[i,j]
@@ -221,26 +236,34 @@ def fuzzy_matrix(uq):
 
 # Get a list with only one true copy of every author along their total publication count
 # We keep the longest name as the true copy
-def fuzzymatching_authors(uq, cts, fz, tol=90):
-    uqlens = np.argsort(np.array(list(map(len,uq))))[::-1]
-    uqset = set(uq)
-    ctset = cts.copy()
+def fuzzymatching_authors(pnum, fz, tol=90):
+        
+    uqdict = dict()
+    uqset = set(fz.index)
+    ctset = pnum.copy()
+    ctdict = dict()
 
     print('Started with:\t', len(uqset), '\n')
-    for i in range(len(uqlens)-1):
-        name = uq[uqlens[i]]
+    for i in range(len(fz)-1):
+        name = fz.index[i]
         foo = fz.iloc[ i: , i+1:].loc[name, fz.loc[name] >= tol]
         if len(foo) > 0:
             # If there are other names that are fuzzy-matched
             # Remove those copies from the author list
             # Add their papers to this true name
             
-            print(name, '-->', foo.index.values, sep='\t')
             uqset = uqset - set(foo.index)
-            ctset[name] += cts[foo.index].values.sum()
+            ctset[name] += pnum[foo.index].values.sum()
+            uqdict[name] = foo.index.values.tolist()
 
     uqset = sorted(list(uqset))
     ctset = ctset.loc[uqset]
+
+    for name in ctset.index:
+        if name in uqdict:
+            ctdict[name] = uqdict[name]
+            print(name, '-->', uqdict[name], sep='\t')
+    
     print('\nAfter matching:\t', len(uqset), sep='')
     
-    return ctset
+    return ctset, ctdict
