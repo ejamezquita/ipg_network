@@ -264,6 +264,18 @@ def fuzzymatching_authors(pnum, fz, tol=90):
         if name in uqdict:
             ctdict[name] += uqdict[name]
             print(name, '-->', uqdict[name], sep='\t')
+            
+        # Add a initial-less variant if it doesn't exist
+        lname, fname = name.split(', ')
+        fnames = fname.split(' ')
+        for i in range(1, len(fnames)):
+            alt = lname + ', ' + fnames[0] + ' ' + fnames[i][0]
+            if alt not in ctdict[name]:
+                ctdict[name].append(alt)
+        
+        alt = lname + ', ' + fnames[0]
+        if alt not in ctdict[name]:
+            ctdict[name].append(alt)
     
     print('\nAfter matching:\t', len(uqset), sep='')
     
