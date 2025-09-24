@@ -241,7 +241,6 @@ def fuzzymatching_authors(pnum, fz, tol=90):
     uqdict = dict()
     uqset = set(fz.index)
     ctset = pnum.copy()
-    ctdict = dict()
 
     print('Started with:\t', len(uqset), '\n')
     for i in range(len(fz)-1):
@@ -258,10 +257,12 @@ def fuzzymatching_authors(pnum, fz, tol=90):
 
     uqset = sorted(list(uqset))
     ctset = ctset.loc[uqset]
-
+    ctdict = dict()
+    
     for name in ctset.index:
+        ctdict[name] = [name]
         if name in uqdict:
-            ctdict[name] = uqdict[name]
+            ctdict[name] += uqdict[name]
             print(name, '-->', uqdict[name], sep='\t')
     
     print('\nAfter matching:\t', len(uqset), sep='')
