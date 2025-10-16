@@ -36,7 +36,7 @@ def prepare_dimensions_data(filenames, columns_to_keep, places=None, year = date
             if not pd.isna(df.loc[i,column]):
                 text = unicodedata.normalize('NFD', df.loc[i,column])
                 text = text.encode('ascii', 'ignore').decode("utf-8")
-                df.loc[i,column] = text.replace('-','').replace('.','')
+                df.loc[i,column] = text.replace('-','').replace('.','').replace('  ',' ')
     
     # Drop papers where no author is geographically associated to any of the indicated places
     # (Only if places are specified)
@@ -158,11 +158,18 @@ def add_blanks(s):
 # Last name and first name are treated separately: then we take the minimum between the two
 def fuzzy_matching(name1, name2, accept_value = 98):
     
-    lname1, fname1 = name1.split(', ')
+    foo = name1.split(', ')
+    bar = name2.split(', ')
+    if (len(foo) != 2) or (len(bar) != 2):
+        print('Skipping comparison:\t', name1, name2, sep='\t')
+        return 0,0
+        
+    lname1, fname1 = foo
     inits1 = [x[0] for x in fname1.split(' ')]
     
-    lname2, fname2 = name2.split(', ')
+    lname2, fname2 = bar
     inits2 = [x[0] for x in fname2.split(' ')]
+
     
     #If none of the initials match, then assume that names are not equal and move on
     if not any([x in inits1 for x in inits2]):
@@ -280,3 +287,13 @@ def fuzzymatching_authors(pnum, fz, tol=90):
     print('\nAfter matching:\t', len(uqset), sep='')
     
     return ctset, ctdict
+
+
+# columns_to_keep = [
+#    'Publication ID', 'Title', 'Abstract', 'Source title', 'ISSN', 'Publisher', 'MeSH terms', 'PubYear',
+#    'Open Access', 'Publication Type', 'Document Type', 'Authors', 'Authors (Raw Affiliation)', 'Corresponding Authors',
+#    'Research Organizations - standardized', 'GRID IDs', 'City of standardized research organization',
+#    'State of standardized research organization', 'Country of standardized research organization', 'Funder',
+#    'Funder Group', 'Funder Country', 'Times cited', 'RCR', 'FCR', 'Altmetric', 'Fields of Research (ANZSRC 2020)',
+#    'Units of Assessment', 'Sustainable Development Goals'
+#]
